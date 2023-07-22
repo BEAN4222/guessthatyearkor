@@ -2,6 +2,7 @@ import boto3
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from starlette.config import Config
+import random
 
 config = Config(".env")
 
@@ -13,12 +14,19 @@ s3 = boto3.client(
 )
 
 
-print(config('s3_id'))
+def get_random_image():
+    response = s3.list_objects_v2(Bucket="imgstgforguesstheyear")
+    objects = response.get("Contents", [])
+    if not objects:
+        raise Exception("No images found in bucket")
+    random_key = random.choice(objects)["Key"]
+    result = s3.get_object(Bucket="imgstgforguesstheyear", Key=random_key)
+    return StreamingResponse(content=result["Body"].iter_chunks())
+
 @app.get("/")
 async def main():
     try:
-        result = s3.get_object(Bucket="imgstgforguesstheyear", Key="KakaoTalk_20230718_164159968.jpg")
-        return StreamingResponse(content=result["Body"].iter_chunks())
+        return get_random_image()
     except Exception as e:
         if hasattr(e, "message"):
             raise HTTPException(
