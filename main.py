@@ -28,7 +28,7 @@ def get_random_image():
     result = s3.get_object(Bucket="imgstgforguesstheyear", Key=random_key)
     return StreamingResponse(content=result["Body"].iter_chunks())
 
-@app.get("/image")
+@app.get("/img")
 async def image():
     return get_random_image()
 
