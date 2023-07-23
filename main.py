@@ -1,12 +1,17 @@
 import boto3
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse,HTMLResponse
 from starlette.config import Config
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import random
 
 config = Config(".env")
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"),name="static")
+
 s3 = boto3.client(
     "s3",
     aws_access_key_id=config('s3_id'),
@@ -23,10 +28,14 @@ def get_random_image():
     result = s3.get_object(Bucket="imgstgforguesstheyear", Key=random_key)
     return StreamingResponse(content=result["Body"].iter_chunks())
 
+@app.get("/image")
+async def image():
+    return get_random_image()
+
 @app.get("/")
-async def main():
+async def main(request: Request):
     try:
-        return get_random_image()
+        return templates.TemplateResponse("game.html",{"request": request})
     except Exception as e:
         if hasattr(e, "message"):
             raise HTTPException(
