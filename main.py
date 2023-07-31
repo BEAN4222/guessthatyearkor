@@ -26,7 +26,12 @@ def get_random_image():
         raise Exception("No images found in bucket")
     random_key = random.choice(objects)["Key"]
     result = s3.get_object(Bucket="imgstgforguesstheyear", Key=random_key)
-    return StreamingResponse(content=result["Body"].iter_chunks())
+    metadata = result['Metadata']
+    headers = {}
+    for key, value in metadata.items():
+        headers[f'x-amz-meta-{key}'] = value
+    return StreamingResponse(content=result["Body"].iter_chunks(), headers=headers)
+
 
 @app.get("/img")
 async def image():
