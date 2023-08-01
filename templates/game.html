@@ -5,7 +5,24 @@
         <div class="item">
             <img class="item_img" src="{{ url_for('image') }}" alt="Random Image">
         </div>
+        <div class="description">
+            
+        </div>
     </div>
 </div>
-
+<script>
+fetch('/img')
+    .then(response => {
+        const metadata = response.headers.get('x-amz-meta-year');
+        const metadataElement = document.createElement('p');
+        metadataElement.textContent = `Metadata: ${metadata}`;
+        document.querySelector('.description').appendChild(metadataElement);
+        return response.blob();
+    })
+    .then(blob => {
+        const imageUrl = URL.createObjectURL(blob);
+        const imageElement = document.querySelector('.item_img');
+        imageElement.src = imageUrl;
+    });
+</script>
 {% endblock %}
