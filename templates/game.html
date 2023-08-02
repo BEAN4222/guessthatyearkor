@@ -1,16 +1,29 @@
 {% extends "index.html" %}
 {% block content %}
 <div class='container'>
-    <div class="top">
-        <div class="item">
+    <div class="top" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="item" draggable="true" ondragstart="drag(event)">
             <img class="item_img" alt="Random Image">
+            <div class="description"></div>
         </div>
-        <div class="description">
-            
-        </div>
+    </div>
+    <div class="bottom" ondrop="drop(event)" ondragover="allowDrop(event)">
     </div>
 </div>
 <script>
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+}
 fetch('/img')
     .then(response => {
         const metadata = response.headers.get('x-amz-meta-year');
