@@ -1,28 +1,35 @@
 {% extends "index.html" %}
 {% block content %}
 <div class='container'>
-    <div class="top" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <div class="item" draggable="true" ondragstart="drag(event)">
-            <img class="item_img" alt="Random Image">
-            <div class="description"></div>
-        </div>
+    <div class="top">
+      <div class="item" id="given" draggable="true">
+          <img class="item_img" alt="Random Image">
+          <div class="description"></div>
+      </div>
     </div>
     <div class="bottom" ondrop="drop(event)" ondragover="allowDrop(event)">
     </div>
 </div>
 <script>
+var item = document.querySelector('.item');
+item.addEventListener('dragstart', dragstart);
+
 function allowDrop(ev) {
   ev.preventDefault();
 }
 
-function drag(ev) {
-  ev.dataTransfer.setData("text", ev.target.id);
+function dragstart(ev) {
+  console.log(ev.target.id,ev.target.classList);
+  ev.dataTransfer.setData("text/plain", ev.target.id);
 }
 
 function drop(ev) {
   ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
-  ev.target.appendChild(document.getElementById(data));
+  var data = ev.dataTransfer.getData("text/plain");
+  console.log(data);
+  var node = document.getElementById(data);
+  ev.target.appendChild(node);
+  console.log(ev)
 }
 fetch('/img')
     .then(response => {

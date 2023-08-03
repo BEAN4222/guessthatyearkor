@@ -1,12 +1,18 @@
 .item {
     width: 150px;
-    height: 200px;
+    height: 224px;
     margin: auto;
 }
+
+.description{
+    pointer-events: none;
+}
+
 .item_img{
     width:100%;
-    height:100%;
+    height:200px;
     object-fit:cover;
+    pointer-events: none;
 }
 .bottom {
     height: 400px !important;
