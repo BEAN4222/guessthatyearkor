@@ -2,6 +2,14 @@
     height: 224px;
 }
 
+.bottom {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    height: 230px;
+  }
 .item {
     width: 150px;
     height: 224px;
@@ -17,7 +25,4 @@
     height:200px;
     object-fit:cover;
     pointer-events: none;
-}
-.bottom {
-    height: 400px !important;
 }

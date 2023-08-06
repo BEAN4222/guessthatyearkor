@@ -19,12 +19,25 @@ s3 = boto3.client(
 )
 
 
+selected_keys = []
+
 def get_random_image():
     response = s3.list_objects_v2(Bucket="imgstgforguesstheyear")
     objects = response.get("Contents", [])
     if not objects:
         raise Exception("No images found in bucket")
-    random_key = random.choice(objects)["Key"]
+
+    # Filter out previously selected keys
+    available_objects = [obj for obj in objects if obj["Key"] not in selected_keys]
+    print(available_objects)
+    if not available_objects:
+        # Reset selected keys if all images have been selected
+        selected_keys.clear()
+        available_objects = objects
+
+    random_key = random.choice(available_objects)["Key"]
+    selected_keys.append(random_key)
+
     result = s3.get_object(Bucket="imgstgforguesstheyear", Key=random_key)
     metadata = result['Metadata']
     headers = {}

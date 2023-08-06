@@ -26,12 +26,27 @@ function dragstart(ev) {
 function drop(ev) {
   ev.preventDefault();
   var data = ev.dataTransfer.getData("text/plain");
-  console.log(data);
   var node = document.getElementById(data);
   ev.target.appendChild(node);
-  console.log(ev)
+
+  // Create a new item div in the top div
+  var topDiv = document.querySelector('.top');
+  var newItem = document.createElement('div');
+  newItem.className = 'item';
+  newItem.id = 'newItem';
+  newItem.draggable = true;
+  newItem.innerHTML = '<img class="item_img" alt="Random Image"><div class="description"></div>';
+  topDiv.appendChild(newItem);
+
+  // Add event listener for dragstart
+  newItem.addEventListener('dragstart', dragstart);
+
+  // Fetch new image and metadata
+  fetchImage();
 }
-fetch('/img')
+
+function fetchImage() {
+  fetch('/img')
     .then(response => {
         const metadata = response.headers.get('x-amz-meta-year');
         const metadataElement = document.createElement('p');
@@ -44,5 +59,6 @@ fetch('/img')
         const imageElement = document.querySelector('.item_img');
         imageElement.src = imageUrl;
     });
+}
 </script>
 {% endblock %}
