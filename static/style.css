@@ -4,15 +4,16 @@
 
 .bottom {
     display: flex;
-    flex-wrap: nowrap;
     overflow-x: auto;
     height: 230px;
+    width:1200px;
     align-items: center;
   }
 .item {
     width: 150px;
+    min-width: 150px;
     height: 224px;
-    margin: auto;
+    margin: 10px;
 }
 
 .description{
