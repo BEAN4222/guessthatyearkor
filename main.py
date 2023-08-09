@@ -29,7 +29,6 @@ def get_random_image():
 
     # Filter out previously selected keys
     available_objects = [obj for obj in objects if obj["Key"] not in selected_keys]
-    print(available_objects)
     if not available_objects:
         # Reset selected keys if all images have been selected
         selected_keys.clear()
