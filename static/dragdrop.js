@@ -3,7 +3,11 @@ var item = document.querySelector('.item');
 item.addEventListener('dragstart', () => {
     setTimeout(() => item.classList.add("dragging"), 0);
 });
-item.addEventListener('dragend', () => item.classList.remove("dragging"));
+item.addEventListener('dragend', () => {
+    item.classList.remove("dragging");
+    item.setAttribute('draggable','false');
+    
+});
 
 const sortableList = document.querySelector(".bottom");
 console.log(sortableList)
@@ -22,7 +26,15 @@ const initSortableList = (e) => {
 }
 sortableList.addEventListener("dragover", initSortableList);
 
-sortableList.addEventListener("drop", (e) => {e.preventDefault(); fetchImage();});
+try {
+    sortableList.addEventListener("drop", (e) => {
+      e.preventDefault();
+      console.log('what the fuck')
+      fetchImage();
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
 function fetchImage() {
   fetch('/img')
