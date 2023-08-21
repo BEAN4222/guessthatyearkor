@@ -3,12 +3,6 @@ var item = document.querySelector('.item');
 item.addEventListener('dragstart', () => {
     setTimeout(() => item.classList.add("dragging"), 0);
 });
-item.addEventListener('dragend', () => {
-    item.classList.remove("dragging");
-    item.setAttribute('draggable','false');
-    
-});
-
 const sortableList = document.querySelector(".bottom");
 console.log(sortableList)
 const items = sortableList.querySelectorAll(".item");
@@ -23,15 +17,30 @@ const initSortableList = (e) => {
     });
     // Inserting the dragging item before the found sibling
     sortableList.insertBefore(draggingItem, nextSibling);
+    console.log('tlqkf anjdi')
+}
+const handleDragLeave = (e) => {
+  const draggingItem = document.querySelector(".dragging");
+  if (e.currentTarget.contains(e.relatedTarget)) return;
+  const top = document.querySelector(".top");
+  top.insertBefore(draggingItem, top.firstChild);
+  console.log('leave')
 }
 sortableList.addEventListener("dragover", initSortableList);
-
+sortableList.addEventListener("dragleave", handleDragLeave);
 try {
     sortableList.addEventListener("drop", (e) => {
-      e.preventDefault();
-      console.log('what the fuck')
+    // e.preventDefault();
+    // Get the dropped element
+    const droppedElement = document.querySelector(".dragging");
+    // Check if the dropped element has the item class
+    if (droppedElement && droppedElement.classList.contains("item")) {
+      console.log("Item dropped");
+      droppedElement.classList.remove("dragging");
+      droppedElement.setAttribute('draggable','false');
       fetchImage();
-    });
+    }
+  });
   } catch (error) {
     console.log(error);
   }
