@@ -1,4 +1,6 @@
-fetchImage()
+
+fetchImage();
+setTimeout(fetchImage, 250); // 1000ms = 1 second delay
 var item = document.querySelector('.item');
 item.addEventListener('dragstart', () => {
     setTimeout(() => item.classList.add("dragging"), 0);
@@ -34,10 +36,42 @@ try {
     // Get the dropped element
     const droppedElement = document.querySelector(".dragging");
     // Check if the dropped element has the item class
+    // as item dropped, remove the dragging class, set draggable false, make new img on top, and scoring part
     if (droppedElement && droppedElement.classList.contains("item")) {
       console.log("Item dropped");
+      let currentYear = droppedElement.querySelector('.description p');
       droppedElement.classList.remove("dragging");
       droppedElement.setAttribute('draggable','false');
+      const top = document.querySelector(".top");
+      const newDiv = document.createElement('div');
+      newDiv.setAttribute('class', 'item available');
+      newDiv.setAttribute('draggable', 'true');
+      newDiv.innerHTML = `
+      <img class="item_img" alt="Random Image">
+      <div class="description"></div>
+    `;
+    let siblings = [...sortableList.querySelectorAll(".item")];
+    let nextSibling = siblings.find(sibling => {
+      return e.clientX <= sibling.offsetLeft + sibling.offsetWidth / 2;
+    });
+    let prevSibling = siblings.find(sibling => {
+      return e.clientX >= sibling.offsetLeft + sibling.offsetWidth / 2;
+    });
+    if (nextSibling) {
+      const nextSiblingMetadata = nextSibling.querySelector('.description p');
+      
+    }
+    if (prevSibling) {
+      const prevSiblingMetadata = prevSibling.querySelector('.description p');
+    }
+    
+
+
+      top.appendChild(newDiv);
+      var item = document.querySelector('.item');
+      item.addEventListener('dragstart', () => {
+      setTimeout(() => item.classList.add("dragging"), 0);
+});
       fetchImage();
     }
   });
@@ -45,19 +79,28 @@ try {
     console.log(error);
   }
 
-function fetchImage() {
-  fetch('/img')
-    .then(response => {
-        const metadata = response.headers.get('x-amz-meta-year');
-        const metadataElement = document.createElement('p');
-        metadataElement.textContent = `Metadata: ${metadata}`;
-        document.querySelector('.description').appendChild(metadataElement);
-        return response.blob();
-    })
-    .then(blob => {
-        const imageUrl = URL.createObjectURL(blob);
-        const imageElement = document.querySelector('.item_img');
-        imageElement.src = imageUrl;
-    });
-}
-
+  function fetchImage() {
+    let availableElement;
+    fetch('/img')
+      .then(response => {
+          const metadata = response.headers.get('x-amz-meta-year');
+          availableElement = document.querySelector('.available');
+          if (availableElement) {
+              const metadataElement = document.createElement('p');
+              metadataElement.textContent = `Metadata: ${metadata}`;
+              availableElement.querySelector('.description').appendChild(metadataElement);
+          }
+          return response.blob();
+      })
+      .then(blob => {
+          const imageUrl = URL.createObjectURL(blob);
+          if (availableElement) {
+              const imageElement = availableElement.querySelector('.item_img');
+              if (imageElement) {
+                  imageElement.src = imageUrl;
+              }
+          }
+        availableElement.classList.remove("available")
+      });
+  }
+  
