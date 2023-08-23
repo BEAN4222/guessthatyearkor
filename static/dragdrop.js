@@ -1,12 +1,13 @@
 
 fetchImage();
 setTimeout(fetchImage, 250); // 1000ms = 1 second delay
+
 var item = document.querySelector('.item');
 item.addEventListener('dragstart', () => {
     setTimeout(() => item.classList.add("dragging"), 0);
 });
 const sortableList = document.querySelector(".bottom");
-console.log(sortableList)
+
 const items = sortableList.querySelectorAll(".item");
 const initSortableList = (e) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const initSortableList = (e) => {
     sortableList.insertBefore(draggingItem, nextSibling);
     console.log('tlqkf anjdi')
 }
+
 const handleDragLeave = (e) => {
   const draggingItem = document.querySelector(".dragging");
   if (e.currentTarget.contains(e.relatedTarget)) return;
@@ -28,6 +30,7 @@ const handleDragLeave = (e) => {
   top.insertBefore(draggingItem, top.firstChild);
   console.log('leave')
 }
+
 sortableList.addEventListener("dragover", initSortableList);
 sortableList.addEventListener("dragleave", handleDragLeave);
 try {
@@ -39,7 +42,7 @@ try {
     // as item dropped, remove the dragging class, set draggable false, make new img on top, and scoring part
     if (droppedElement && droppedElement.classList.contains("item")) {
       console.log("Item dropped");
-      let currentYear = droppedElement.querySelector('.description p');
+      let currentYear = parseInt(droppedElement.querySelector('.description p').textContent);
       droppedElement.classList.remove("dragging");
       droppedElement.setAttribute('draggable','false');
       const top = document.querySelector(".top");
@@ -50,6 +53,8 @@ try {
       <img class="item_img" alt="Random Image">
       <div class="description"></div>
     `;
+    // scoring part
+    let scoreflag = true
     let siblings = [...sortableList.querySelectorAll(".item")];
     let nextSibling = siblings.find(sibling => {
       return e.clientX <= sibling.offsetLeft + sibling.offsetWidth / 2;
@@ -58,15 +63,27 @@ try {
       return e.clientX >= sibling.offsetLeft + sibling.offsetWidth / 2;
     });
     if (nextSibling) {
-      const nextSiblingMetadata = nextSibling.querySelector('.description p');
-      
+      const nextSiblingYear = parseInt(nextSibling.querySelector('.description p').textContent);
+      console.log(nextSiblingYear)
+      if (nextSiblingYear<currentYear){
+        console.log(nextSiblingYear)
+        scoreflag = false
+      }
     }
     if (prevSibling) {
-      const prevSiblingMetadata = prevSibling.querySelector('.description p');
+      const prevSiblingYear = parseInt(prevSibling.querySelector('.description p').textContent);
+      console.log(prevSiblingYear)
+      if (prevSiblingYear>currentYear){
+        scoreflag = false
+        console.log(prevSiblingYear)
+      }
     }
-    
-
-
+    console.log(scoreflag)
+    if (scoreflag!=true){
+      console.log('-1')
+      scoreflag = true
+    }
+    //making new element on the top and set an image over it
       top.appendChild(newDiv);
       var item = document.querySelector('.item');
       item.addEventListener('dragstart', () => {
@@ -87,7 +104,7 @@ try {
           availableElement = document.querySelector('.available');
           if (availableElement) {
               const metadataElement = document.createElement('p');
-              metadataElement.textContent = `Metadata: ${metadata}`;
+              metadataElement.textContent = `${metadata}`;
               availableElement.querySelector('.description').appendChild(metadataElement);
           }
           return response.blob();
