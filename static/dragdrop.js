@@ -1,7 +1,7 @@
 
 fetchImage();
 setTimeout(fetchImage, 250); // 1000ms = 1 second delay
-
+let life = 3
 var item = document.querySelector('.item');
 item.addEventListener('dragstart', () => {
     setTimeout(() => item.classList.add("dragging"), 0);
@@ -64,9 +64,7 @@ try {
     });
     if (nextSibling) {
       const nextSiblingYear = parseInt(nextSibling.querySelector('.description p').textContent);
-      console.log(nextSiblingYear)
       if (nextSiblingYear<currentYear){
-        console.log(nextSiblingYear)
         scoreflag = false
       }
     }
@@ -75,12 +73,16 @@ try {
       console.log(prevSiblingYear)
       if (prevSiblingYear>currentYear){
         scoreflag = false
-        console.log(prevSiblingYear)
       }
     }
     console.log(scoreflag)
     if (scoreflag!=true){
-      console.log('-1')
+      life -= 1
+      console.log(life)
+      if (life==0){
+        alert("You died! Click OK to replay.");
+        location.reload();
+      }
       scoreflag = true
     }
     //making new element on the top and set an image over it
