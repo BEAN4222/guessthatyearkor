@@ -59,7 +59,7 @@ try {
     let nextSibling = siblings.find(sibling => {
       return e.clientX <= sibling.offsetLeft + sibling.offsetWidth;
     });
-    let prevSibling = siblings.find(sibling => {
+    let prevSibling = siblings.reverse().find(sibling => {
       return e.clientX >= sibling.offsetLeft + sibling.offsetWidth;
     });
     if (nextSibling) {
@@ -79,10 +79,10 @@ try {
       if (scoreflag!=true){
       life -= 1
       if (life==0){
+        scoreflag = true
         alert("You died! Click OK to replay.");
         location.reload();
       }
-      scoreflag = true
     }
     //making new element on the top and set an image over it
       top.appendChild(newDiv);
