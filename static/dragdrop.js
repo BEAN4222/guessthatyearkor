@@ -16,7 +16,7 @@ const initSortableList = (e) => {
     let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
     // Finding the sibling after which the dragging item should be placed
     let nextSibling = siblings.find(sibling => {
-      return e.clientX <= sibling.offsetLeft + sibling.offsetWidth;
+      return (e.pageX) <= sibling.offsetLeft-sortableList.scrollLeft + sibling.offsetWidth/2;
     });
     // Inserting the dragging item before the found sibling
     sortableList.insertBefore(draggingItem, nextSibling);
@@ -57,10 +57,10 @@ try {
     
     console.log(siblings)
     let nextSibling = siblings.find(sibling => {
-      return e.clientX <= sibling.offsetLeft + sibling.offsetWidth;
+      return e.pageX <= sibling.offsetLeft + sibling.offsetWidth;
     });
     let prevSibling = siblings.reverse().find(sibling => {
-      return e.clientX >= sibling.offsetLeft + sibling.offsetWidth;
+      return e.pageX >= sibling.offsetLeft + sibling.offsetWidth;
     });
     if (nextSibling) {
       const nextSiblingYear = parseInt(nextSibling.querySelector('.description p').textContent);
