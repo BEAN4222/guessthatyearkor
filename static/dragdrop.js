@@ -57,23 +57,40 @@ try {
     
     console.log(siblings)
     let nextSibling = siblings.find(sibling => {
-      return e.pageX <= sibling.offsetLeft + sibling.offsetWidth;
+      return e.pageX <= sibling.offsetLeft-sortableList.scrollLeft + sibling.offsetWidth/2;
     });
     let prevSibling = siblings.reverse().find(sibling => {
-      return e.pageX >= sibling.offsetLeft + sibling.offsetWidth;
+      return e.pageX >= sibling.offsetLeft-sortableList.scrollLeft + sibling.offsetWidth/2;
     });
     if (nextSibling) {
-      const nextSiblingYear = parseInt(nextSibling.querySelector('.description p').textContent);
+      let nextSiblingYear = parseInt(nextSibling.querySelector('.description p').textContent);
       console.log(1,nextSiblingYear)
       if (nextSiblingYear<currentYear){
         scoreflag = false
+        nextSibling = siblings.reverse().find(sibling => {
+          nextSiblingYear = parseInt(sibling.querySelector('.description p').textContent);
+          return nextSiblingYear>=currentYear;
+        });
+        // Inserting the dragging item before the found sibling
+        sortableList.insertBefore(droppedElement, nextSibling);
       }
     }
     if (prevSibling) {
-      const prevSiblingYear = parseInt(prevSibling.querySelector('.description p').textContent);
+      let prevSiblingYear = parseInt(prevSibling.querySelector('.description p').textContent);
       console.log(2,prevSiblingYear)
       if (prevSiblingYear>currentYear){
         scoreflag = false
+        prevSibling = siblings.find(sibling => {
+          prevSiblingYear = parseInt(sibling.querySelector('.description p').textContent);
+          return prevSiblingYear<=currentYear;
+        });
+          // Inserting the dragging item before the found sibling
+      if (prevSibling) {
+        sortableList.insertBefore(droppedElement, prevSibling);
+      } else {
+        // Inserting the dragging item at the beginning of the list
+        sortableList.insertBefore(droppedElement, sortableList.firstChild);
+      }
       }
     }
       if (scoreflag!=true){
