@@ -67,7 +67,7 @@ try {
       console.log(1,nextSiblingYear)
       if (nextSiblingYear<currentYear){
         scoreflag = false
-        nextSibling = siblings.reverse().find(sibling => {
+        nextSibling = siblings.find(sibling => {
           nextSiblingYear = parseInt(sibling.querySelector('.description p').textContent);
           return nextSiblingYear>=currentYear;
         });
@@ -80,7 +80,7 @@ try {
       console.log(2,prevSiblingYear)
       if (prevSiblingYear>currentYear){
         scoreflag = false
-        prevSibling = siblings.find(sibling => {
+        prevSibling = siblings.reverse().find(sibling => {
           prevSiblingYear = parseInt(sibling.querySelector('.description p').textContent);
           return prevSiblingYear<=currentYear;
         });
