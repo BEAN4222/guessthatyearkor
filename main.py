@@ -1,4 +1,5 @@
 import boto3
+import json
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse,HTMLResponse
 from starlette.config import Config
@@ -19,35 +20,28 @@ s3 = boto3.client(
 )
 
 
-selected_keys = []
 
-def get_random_image():
-    response = s3.list_objects_v2(Bucket="imgstgforguesstheyear")
-    objects = response.get("Contents", [])
-    if not objects:
-        raise Exception("No images found in bucket")
 
-    # Filter out previously selected keys
-    available_objects = [obj for obj in objects if obj["Key"] not in selected_keys]
-    if not available_objects:
-        # Reset selected keys if all images have been selected
-        selected_keys.clear()
-        available_objects = objects
+def get_random_video():
+    # JSON 파일의 키를 지정합니다.
+    key = "videos.json"
 
-    random_key = random.choice(available_objects)["Key"]
-    selected_keys.append(random_key)
+    # JSON 파일을 다운로드합니다.
+    result = s3.get_object(Bucket='imgstgforguesstheyear', Key=key)
+    videos = json.load(result["Body"])
 
-    result = s3.get_object(Bucket="imgstgforguesstheyear", Key=random_key)
-    metadata = result['Metadata']
-    headers = {}
-    for key, value in metadata.items():
-        headers[f'x-amz-meta-{key}'] = value
-    return StreamingResponse(content=result["Body"].iter_chunks(), headers=headers)
+    if not videos:
+        raise Exception("No videos found in JSON file")
+    random_index = random.randint(0, len(videos) - 1)
+
+    # 선택한 인덱스의 동영상 정보를 반환합니다.
+    return videos[random_index]
+
 
 
 @app.get("/img")
 async def image():
-    return get_random_image()
+    return get_random_video()
 
 @app.get("/")
 async def main(request: Request):
