@@ -1,6 +1,9 @@
 
 fetchImage();
-setTimeout( fetchAndDisplay, 250); // 1000ms = 1 second delay
+setTimeout( fetchImage, 250); 
+
+
+
 
 let life = 3
 var item = document.querySelector('.item');
@@ -25,7 +28,6 @@ const initSortableList = (e) => {
 }
 const handleDragLeave = (e) => {
   const draggingItem = document.querySelector(".dragging");
-  console.log('leave')
   if (e.currentTarget.contains(e.relatedTarget)) return;
   const top = document.querySelector(".top");
   top.insertBefore(draggingItem, top.firstChild);
@@ -71,28 +73,29 @@ try {
     });
     if (nextSibling) {
       let nextSiblingYear = new Date(nextSibling.querySelector('.description .date').textContent);
-      console.log(1,nextSiblingYear)
-      if (nextSiblingYear.getTime()<currentYear.getTime()){
+      if (nextSiblingYear<currentYear){
         scoreflag = false
         nextSibling = siblings.find(sibling => {
           nextSiblingYear = new Date(sibling.querySelector('.description .date').textContent);
-          return nextSiblingYear.getTime()>=currentYear.getTime();
+          console.log('임시 다음 년도',nextSiblingYear,currentYear)
+          return nextSiblingYear>currentYear;
         });
+        console.log('수정된 다음 요소 년도',nextSibling)
         // Inserting the dragging item before the found sibling
         sortableList.insertBefore(droppedElement, nextSibling);
       }
     }
     if (prevSibling) {
       let prevSiblingYear = new Date(prevSibling.querySelector('.description .date').textContent);
-      console.log(2,prevSiblingYear)
       if (prevSiblingYear.getTime()>currentYear.getTime()){
         scoreflag = false
         prevSibling = siblings.reverse().find(sibling => {
           prevSiblingYear = new Date(sibling.querySelector('.description .date').textContent);
-          return prevSiblingYear.getTime()<=currentYear.getTime();
+          return prevSiblingYear.getTime()<currentYear.getTime();
         });
           // Inserting the dragging item before the found sibling
       if (prevSibling) {
+        console.log('수정된 바로 전 요소 년도',prevSibling)
         sortableList.insertBefore(droppedElement, prevSibling);
       } else {
         // Inserting the dragging item at the beginning of the list
@@ -140,15 +143,13 @@ try {
 
             const dateElement = document.createElement('p');
             dateElement.textContent = `${date}`;
-            dateElement.style.display='none';
             dateElement.classList.add('date');
             availableElement.querySelector('.description').appendChild(dateElement);
 
             const linkElement = document.createElement('a');
             linkElement.href = `${link}`;
-            linkElement.style.display='none';
             linkElement.classList.add('link');
-            linkElement.textContent = "Watch Video";
+            linkElement.textContent = "보러가기";
             availableElement.querySelector('.description').appendChild(linkElement);
         }
 
@@ -159,13 +160,15 @@ try {
             }
         }
         availableElement.classList.remove("available")
+        topdateElement = document.querySelector('.top .date');
+        topdateElement.style.display = 'none';
+        toplinkElement = document.querySelector('.top .link')
+        toplinkElement.style.display = 'none'
+
+
     });
     }
-    async function fetchAndDisplay() {
-      await fetchImage();  // fetchImage 함수가 완료될 때까지 기다립니다.
-      let yearElement = document.querySelector('.bottom .description .date');  // 이제 새 요소가 DOM에 추가되었으므로 선택할 수 있습니다.
-      yearElement.style.display = 'block';
-  }
+
   
 
   
