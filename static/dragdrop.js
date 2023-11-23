@@ -52,6 +52,7 @@ try {
       let currentYear = new Date(droppedElement.querySelector('.description .date').textContent);
       console.log(0,currentYear);
       let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
+      let reversedSiblings = [...siblings].reverse();
       droppedElement.classList.remove("dragging");
       droppedElement.setAttribute('draggable','false');
       const top = document.querySelector(".top");
@@ -62,19 +63,21 @@ try {
       <img class="item_img" alt="Random Image">
       <div class="description"></div>
     `;
+    
     // scoring part
     let scoreflag = true
     
     let nextSibling = siblings.find(sibling => {
       return e.pageX <= sibling.offsetLeft-sortableList.scrollLeft + sibling.offsetWidth/2;
     });
-    let prevSibling = siblings.reverse().find(sibling => {
+    let prevSibling = reversedSiblings.find(sibling => {
       return e.pageX >= sibling.offsetLeft-sortableList.scrollLeft + sibling.offsetWidth/2;
     });
     if (nextSibling) {
       let nextSiblingYear = new Date(nextSibling.querySelector('.description .date').textContent);
       if (nextSiblingYear<currentYear){
         scoreflag = false
+        console.log("틀린 연도",nextSibling)
         nextSibling = siblings.find(sibling => {
           nextSiblingYear = new Date(sibling.querySelector('.description .date').textContent);
           console.log('임시 다음 년도',nextSiblingYear,currentYear)
@@ -87,16 +90,17 @@ try {
     }
     if (prevSibling) {
       let prevSiblingYear = new Date(prevSibling.querySelector('.description .date').textContent);
-      if (prevSiblingYear.getTime()>currentYear.getTime()){
+      if (prevSiblingYear>currentYear){
         scoreflag = false
-        prevSibling = siblings.reverse().find(sibling => {
+        prevSibling = reversedSiblings.find(sibling => {
+          
           prevSiblingYear = new Date(sibling.querySelector('.description .date').textContent);
-          return prevSiblingYear.getTime()<currentYear.getTime();
+          return prevSiblingYear<currentYear;
         });
           // Inserting the dragging item before the found sibling
       if (prevSibling) {
         console.log('수정된 바로 전 요소 년도',prevSibling)
-        sortableList.insertBefore(droppedElement, prevSibling);
+        sortableList.insertBefore(droppedElement, prevSibling.nextSibling);
       } else {
         // Inserting the dragging item at the beginning of the list
         sortableList.insertBefore(droppedElement, sortableList.firstChild);
