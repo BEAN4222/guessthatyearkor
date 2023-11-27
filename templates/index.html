@@ -15,6 +15,14 @@
                 <div class='col'><h1>연도를 맞춰라</h1></div>
             </div>
         </div>
+    <!-- HTML -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+      <p>You died!</p>
+      <button id="replay">Replay</button>
+    </div>
+  </div>
+  
     {% block content %}
     {% endblock %} 
     <script src="{{ url_for('static', path='/dragdrop.js') }}"></script>

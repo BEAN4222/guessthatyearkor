@@ -2,14 +2,12 @@
 fetchImage();
 setTimeout( fetchImage, 250); 
 
-
-
-
 let life = 3
 var item = document.querySelector('.item');
-item.addEventListener('dragstart', () => {
-    setTimeout(() => item.classList.add("dragging"), 0);
-});
+function handleDragStart(event) {
+  setTimeout(() => event.target.classList.add("dragging"), 0);
+}
+item.addEventListener('dragstart', handleDragStart);
 const sortableList = document.querySelector(".bottom");
 
 
@@ -55,6 +53,7 @@ try {
       let reversedSiblings = [...siblings].reverse();
       droppedElement.classList.remove("dragging");
       droppedElement.setAttribute('draggable','false');
+      droppedElement.removeEventListener('dragstart',handleDragStart);
       const top = document.querySelector(".top");
       const newDiv = document.createElement('div');
       newDiv.setAttribute('class', 'item available');
@@ -107,20 +106,25 @@ try {
       }
       }
     }
-      if (scoreflag!=true){
+    if (scoreflag != true) {
       life -= 1
-      if (life==0){
-        scoreflag = true
-        alert("You died! Click OK to replay.");
-        location.reload();
+      if (life == 0) {
+          scoreflag = true
+          // Show the modal
+          let modal = document.getElementById("myModal");
+          modal.style.display = "block";
+          // When the user clicks on the button, close the modal and reload the page
+          document.getElementById("replay").onclick = function() {
+              modal.style.display = "none";
+              location.reload();
+          }
       }
-    }
+  }
+  
     //making new element on the top and set an image over it
       top.appendChild(newDiv);
       var item = document.querySelector('.item');
-      item.addEventListener('dragstart', () => {
-      setTimeout(() => item.classList.add("dragging"), 0);
-});
+      item.addEventListener('dragstart', handleDragStart);
       fetchImage();
       document.querySelector(".life").textContent = `Life: ${life}`;
     }
@@ -152,6 +156,7 @@ try {
 
             const linkElement = document.createElement('a');
             linkElement.href = `${link}`;
+            linkElement.target = '_blank';
             linkElement.classList.add('link');
             linkElement.textContent = "보러가기";
             availableElement.querySelector('.description').appendChild(linkElement);
