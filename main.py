@@ -20,21 +20,22 @@ s3 = boto3.client(
 )
 
 
-
-
+key = "videos.json"
+videos = None
 def get_random_video():
-    # JSON 파일의 키를 지정합니다.
-    key = "videos.json"
-
-    # JSON 파일을 다운로드합니다.
-    result = s3.get_object(Bucket='imgstgforguesstheyear', Key=key)
-    videos = json.load(result["Body"])
+    global videos
+    if videos is None:
+        try:
+            result = s3.get_object(Bucket='imgstgforguesstheyear', Key=key)
+            videos = json.load(result["Body"])
+        except Exception as e:
+            raise Exception("An error occurred while downloading the JSON file: " + str(e))
 
     if not videos:
         raise Exception("No videos found in JSON file")
-    random_index = random.randint(0, len(videos) - 1)
 
     # 선택한 인덱스의 동영상 정보를 반환합니다.
+    random_index = random.randint(0, len(videos) - 1)
     return videos[random_index]
 
 
