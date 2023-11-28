@@ -1,4 +1,15 @@
+// 모달 창과 버튼에 대한 참조를 가져옵니다.
+var modal = document.getElementById("selectingModal");
+var btn = document.getElementById("continueButton");
 
+// 페이지 로드 시 모달 창을 띄웁니다.
+window.onload = function() {
+  modal.style.display = "block";
+}
+
+// 사용자가 버튼을 클릭하면 모달 창을 닫고 JavaScript의 나머지 부분을 실행합니다.
+btn.onclick = function() {
+modal.style.display = "none";
 fetchImage();
 setTimeout( fetchImage, 250); 
 
@@ -33,6 +44,7 @@ const handleDragLeave = (e) => {
 
 sortableList.addEventListener("dragover", initSortableList);
 sortableList.addEventListener("dragleave", handleDragLeave);
+
 try {
     sortableList.addEventListener("drop", (e) => {
     // e.preventDefault();
@@ -133,6 +145,7 @@ try {
   catch (error) {
     console.log(error);
   }
+}
   function fetchImage() {
     let availableElement;
     fetch('/img')
