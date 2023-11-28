@@ -1,6 +1,6 @@
 // 모달 창과 버튼에 대한 참조를 가져옵니다.
 var modal = document.getElementById("selectingModal");
-var btn = document.getElementById("continueButton");
+var btn = document.getElementById("submitDate");
 
 // 페이지 로드 시 모달 창을 띄웁니다.
 window.onload = function() {

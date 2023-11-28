@@ -17,12 +17,17 @@
         </div>
 
 <div id="selectingModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-      <h2>Click the button to continue</h2>
-      <button id="continueButton">Continue</button>        
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Select a date</h2>
+    <div id="dateSelection">
+    <input type="number" id="year" min="1900" max="2099" step="1" value="2023" />
+    <input type="number" id="month" min="1" max="12" step="1" value="1" />
+    <input type="number" id="day" min="1" max="31" step="1" value="1" />
     </div>
-</div>>
+    <button id="submitDate">Submit</button>
+  </div>
+</div>
 
 <div id="myModal" class="modal">
     <div class="modal-content">
