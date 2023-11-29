@@ -1,17 +1,25 @@
+
 // 모달 창과 버튼에 대한 참조를 가져옵니다.
+
+
 var modal = document.getElementById("selectingModal");
 var btn = document.getElementById("submitDate");
-
 // 페이지 로드 시 모달 창을 띄웁니다.
 window.onload = function() {
   modal.style.display = "block";
 }
-
 // 사용자가 버튼을 클릭하면 모달 창을 닫고 JavaScript의 나머지 부분을 실행합니다.
 btn.onclick = function() {
+  let year = document.getElementById('year').value.padStart(4, '0');
+  let month = document.getElementById('month').value.padStart(2, '0');
+  let day = document.getElementById('day').value.padStart(2, '0');
+  
+// 가져온 값을 사용하여 날짜 문자열을 만듭니다.
+let selectedDate = `${year}-${month}-${day}`;
+console.log(selectedDate);
 modal.style.display = "none";
-fetchImage();
-setTimeout( fetchImage, 250); 
+fetchImage(selectedDate);
+setTimeout(function() { fetchImage(selectedDate); }, 250); 
 
 let life = 3
 var item = document.querySelector('.item');
@@ -132,12 +140,12 @@ try {
           }
       }
   }
-  
+
     //making new element on the top and set an image over it
       top.appendChild(newDiv);
       var item = document.querySelector('.item');
       item.addEventListener('dragstart', handleDragStart);
-      fetchImage();
+      fetchImage(selectedDate);
       document.querySelector(".life").textContent = `Life: ${life}`;
     }
   });
@@ -146,9 +154,9 @@ try {
     console.log(error);
   }
 }
-  function fetchImage() {
+  function fetchImage(selectedDate) {
     let availableElement;
-    fetch('/img')
+    fetch(`/img?date=${selectedDate}`)
     .then(response => response.json())
     .then(video => {
         const title = video.title;
@@ -156,7 +164,7 @@ try {
         const thumbnail_url = video.thumbnail_url;
         const link = video.link;
 
-        availableElement = document.querySelector('.available');
+        availableElement = document.querySelector(' .available');
         if (availableElement) {
             const titleElement = document.createElement('p');
             titleElement.textContent = `${title}`;
