@@ -25,9 +25,11 @@ key = "videos.json"
 videos = None
 videos_after_selected_date = None
 standarddate = 0
+visit = []
+index = 0
 def get_random_video(selected_date):
     global videos
-    global videos_after_selected_date,standarddate
+    global videos_after_selected_date,standarddate,visit,index
     if videos is None:
         try:
 
@@ -40,13 +42,22 @@ def get_random_video(selected_date):
     if videos_after_selected_date is None or standarddate!=selected_date:
         standarddate = selected_date
         videos_after_selected_date = [video for video in videos if datetime.strptime(video['date'], '%Y-%m-%d') >= selected_date]
+        visit = [0 for i in range(len(videos_after_selected_date))]
     if not videos:
         raise Exception("No videos found in JSON file")
     if not videos_after_selected_date:
         raise Exception("No videos found in JSON file")
+    elif index==len(videos_after_selected_date):
+        index = 0
+        visit = [0 for i in range(len(videos_after_selected_date))]
+        return None
     print(selected_date,len(videos_after_selected_date))
     # 선택한 인덱스의 동영상 정보를 반환합니다.
     random_index = random.randint(0, len(videos_after_selected_date) - 1)
+    while visit[random_index]:
+        random_index = random.randint(0, len(videos_after_selected_date) - 1)
+    visit[random_index] = 1
+    index+=1
     return videos_after_selected_date[random_index]
 
 
@@ -57,7 +68,12 @@ async def image(request: Request):
         selected_date_str = request.query_params.get('date')
         selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d')
         print(selected_date)
-        return get_random_video(selected_date)
+        result = get_random_video(selected_date)
+        if result:
+            print("hi",index)
+            return result
+        else:
+            return {"error": "No more videos available"}
     except Exception as e:
         print('Exception occurred:', str(e))
         raise HTTPException(status_code=500,detail=str(e))

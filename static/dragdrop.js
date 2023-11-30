@@ -159,6 +159,16 @@ try {
     fetch(`/img?date=${selectedDate}`)
     .then(response => response.json())
     .then(video => {
+      if (video.error) {
+        // Show the modal
+        let modal = document.getElementById("myModal");
+        modal.style.display = "block";
+        // When the user clicks on the button, close the modal and reload the page
+        document.getElementById("replay").onclick = function() {
+            modal.style.display = "none";
+            location.reload();
+        }
+    }
         const title = video.title;
         const date = video.date;
         const thumbnail_url = video.thumbnail_url;
