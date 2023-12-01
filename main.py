@@ -30,6 +30,7 @@ index = 0
 def get_random_video(selected_date):
     global videos
     global videos_after_selected_date,standarddate,visit,index
+    print(index)
     if videos is None:
         try:
 
@@ -64,13 +65,13 @@ def get_random_video(selected_date):
 
 @app.get("/img")
 async def image(request: Request):
+    global index
     try:
         selected_date_str = request.query_params.get('date')
         selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d')
         print(selected_date)
         result = get_random_video(selected_date)
         if result:
-            print("hi",index)
             return result
         else:
             return {"error": "No more videos available"}

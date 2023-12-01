@@ -22,6 +22,7 @@ fetchImage(selectedDate);
 setTimeout(function() { fetchImage(selectedDate); }, 250); 
 
 let life = 3
+let score = 0
 var item = document.querySelector('.item');
 function handleDragStart(event) {
   setTimeout(() => event.target.classList.add("dragging"), 0);
@@ -84,7 +85,7 @@ try {
     `;
     
     // scoring part
-    let scoreflag = true
+    let scoreflag = true;
     
     let nextSibling = siblings.find(sibling => {
       return e.pageX <= sibling.offsetLeft-sortableList.scrollLeft + sibling.offsetWidth/2;
@@ -95,7 +96,7 @@ try {
     if (nextSibling) {
       let nextSiblingYear = new Date(nextSibling.querySelector('.description .date').textContent);
       if (nextSiblingYear<currentYear){
-        scoreflag = false
+        scoreflag = false;
         console.log("틀린 연도",nextSibling)
         nextSibling = siblings.find(sibling => {
           nextSiblingYear = new Date(sibling.querySelector('.description .date').textContent);
@@ -127,9 +128,9 @@ try {
       }
     }
     if (scoreflag != true) {
-      life -= 1
+      life -= 1;
       if (life == 0) {
-          scoreflag = true
+          scoreflag = true;
           // Show the modal
           let modal = document.getElementById("myModal");
           modal.style.display = "block";
@@ -139,14 +140,26 @@ try {
               location.reload();
           }
       }
+    
   }
+    else{
+      score+=1;
+      document.querySelector(".score").textContent = score;
+    }
 
     //making new element on the top and set an image over it
       top.appendChild(newDiv);
       var item = document.querySelector('.item');
       item.addEventListener('dragstart', handleDragStart);
       fetchImage(selectedDate);
-      document.querySelector(".life").textContent = `Life: ${life}`;
+      if (life==2){
+        document.querySelector(".life").textContent = "❤️❤️";
+      }
+      else if(life==1){
+        document.querySelector(".life").textContent = "❤️";
+      }
+
+      
     }
   });
   } 

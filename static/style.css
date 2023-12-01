@@ -1,5 +1,9 @@
 .top {
     height: 224px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .bottom {
@@ -10,10 +14,20 @@
     align-items: center;
   }
 
+.score{
+  font-size: 30px;
+  text-align: right;
+}
+
+.life{
+  position: fixed;
+  height: 200px;
+  font-size: 40px;
+}
 .item {
     width: 150px;
     min-width: 150px;
-    height: 224px;
+    height: 2px;
     margin: 10px;
 }
 
@@ -40,15 +54,23 @@
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgb(0, 0, 0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
   
-  .modal-content {
+  .modal-myown {
+    border-radius: 10px;
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
+    margin: 20% auto;
+    padding: 120px 40px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 1000px; /* Could be more or less, depending on screen size */
+    height: 400px;
+    text-align: center;
   }
-  
+  .modal-myown h2{
+    margin-bottom: 20px;
+  }
+  .modal-myown button{
+    margin-top: 10px;
+  }
