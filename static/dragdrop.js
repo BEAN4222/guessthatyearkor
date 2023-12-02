@@ -134,6 +134,24 @@ try {
           // Show the modal
           let modal = document.getElementById("myModal");
           modal.style.display = "block";
+          if (score = 0){
+            document.querySelector(".phrase").textContent = "짭치 검거";
+          }
+          else if(score<3){
+            document.querySelector(".phrase").textContent = "신규 구독자시군요";
+          }
+          else if(score<5){
+            document.querySelector(".phrase").textContent = "팬치 입문 부정기"
+          }
+          else if(socre<10){
+            document.querySelector(".phrase").textContent = "영상 꾸준히 보는 사람"
+          }
+          else if(score<15){
+            document.querySelector(".phrase").textContent = "슬슬 공급이 수요를 못 따라가는 단계"
+          }
+          else if(socre<20){
+            document.querySelector(".phrase").textContent = "느그자"
+          }
           // When the user clicks on the button, close the modal and reload the page
           document.getElementById("replay").onclick = function() {
               modal.style.display = "none";
