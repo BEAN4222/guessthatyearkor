@@ -27,6 +27,7 @@ videos_after_selected_date = None
 standarddate = 0
 visit = []
 index = 0
+init = True
 def get_random_video(selected_date):
     global videos
     global videos_after_selected_date,standarddate,visit,index
@@ -47,6 +48,7 @@ def get_random_video(selected_date):
     if not videos:
         raise Exception("No videos found in JSON file")
     if not videos_after_selected_date:
+        print("hi")
         raise Exception("No videos found in JSON file")
     elif index==len(videos_after_selected_date):
         index = 0
@@ -61,11 +63,8 @@ def get_random_video(selected_date):
     index+=1
     return videos_after_selected_date[random_index]
 
-
-
 @app.get("/img")
 async def image(request: Request):
-    global index
     try:
         selected_date_str = request.query_params.get('date')
         selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d')
@@ -81,6 +80,10 @@ async def image(request: Request):
     
 @app.get("/")
 async def main(request: Request):
+    global index,score,videos_after_selected_date
+    index = 0
+    score = 0
+    videos_after_selected_date = None
     try:
         return templates.TemplateResponse("game.html",{"request": request})
     except Exception as e:
