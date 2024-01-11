@@ -7,8 +7,9 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import random
 from datetime import datetime
+import os
 
-config = Config(".env")
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -16,8 +17,8 @@ app.mount("/static", StaticFiles(directory="static"),name="static")
 
 s3 = boto3.client(
     "s3",
-    aws_access_key_id=config('s3_id'),
-    aws_secret_access_key=config('s3_secret_key')
+    aws_access_key_id=os.getenv('s3_id'),
+    aws_secret_access_key=os.getenv('s3_secret_key')
 )
 
 

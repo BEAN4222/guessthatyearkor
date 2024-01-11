@@ -196,7 +196,7 @@ try {
         // Show the modal
         let modal = document.getElementById("myModal");
         modal.style.display = "block";
-        document.querySelector(".phrase").textContent = "축하합니다! 모든 동영상의 순서가 완벽합니다.\n 유튭팬치의 모범을 보입니다."
+        document.querySelector(".phrase").innerHTML = "축하합니다! 모든 동영상의 순서가 완벽합니다.<br> 유튭팬치의 모범을 보입니다."
         // When the user clicks on the button, close the modal and reload the page
         document.getElementById("replay").onclick = function() {
             modal.style.display = "none";
