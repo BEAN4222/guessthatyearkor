@@ -42,7 +42,7 @@ def get_random_video(selected_date):
 
         except Exception as e:
             raise Exception("An error occurred while downloading the JSON file: " + str(e))
-    if videos_after_selected_date is None or standarddate!=selected_date:
+    if videos_after_selected_date is None or standarddate!=selected_date: #초기화 단계
         standarddate = selected_date
         videos_after_selected_date = [video for video in videos if datetime.strptime(video['date'], '%Y-%m-%d') >= selected_date]
         visit = [0 for i in range(len(videos_after_selected_date))]
@@ -62,7 +62,7 @@ def get_random_video(selected_date):
         random_index = random.randint(0, len(videos_after_selected_date) - 1)
     visit[random_index] = 1
     index+=1
-    return videos_after_selected_date[random_index]
+    return videos_after_selected_date[random_index],random_index
 
 @app.get("/img")
 async def image(request: Request):
@@ -70,15 +70,25 @@ async def image(request: Request):
         selected_date_str = request.query_params.get('date')
         selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d')
         print(selected_date)
-        result = get_random_video(selected_date)
+        result,resultindex = get_random_video(selected_date)
         if result:
-            return result
+            return [result,resultindex]
         else:
-            return {"error": "No more videos available"}
+            return [{"error": "No more videos available"},0]
     except Exception as e:
         print('Exception occurred:', str(e))
         raise HTTPException(status_code=500,detail=str(e))
     
+
+@app.get("/date")
+async def date(request: Request):
+    try:
+        videoindex = request.query_params.get('index')
+        return [videos_after_selected_date[videoindex]['date'],videos_after_selected_date[videoindex]['link']]
+    except Exception as e:
+        raise HTTPException(status_code=500,detail=str(e))
+    
+
 @app.get("/")
 async def main(request: Request):
     global index,score,videos_after_selected_date

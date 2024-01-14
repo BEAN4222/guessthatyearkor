@@ -134,23 +134,23 @@ try {
           // Show the modal
           let modal = document.getElementById("myModal");
           modal.style.display = "block";
-          if (score = 0){
-            document.querySelector(".phrase").textContent = "짭치 검거";
+          if (score == 0){
+            document.querySelector(".phrase").textContent = "낯선 영상들한테 당해버림";
           }
           else if(score<3){
             document.querySelector(".phrase").textContent = "신규 구독자시군요";
           }
           else if(score<5){
-            document.querySelector(".phrase").textContent = "팬치 입문 부정기"
+            document.querySelector(".phrase").textContent = "팬치 입문 부정기";
           }
-          else if(socre<10){
-            document.querySelector(".phrase").textContent = "영상 꾸준히 보는 사람"
+          else if(score<10){
+            document.querySelector(".phrase").textContent = "영상 꾸준히 보는 사람";
           }
           else if(score<15){
-            document.querySelector(".phrase").textContent = "슬슬 공급이 수요를 못 따라가는 단계"
+            document.querySelector(".phrase").textContent = "슬슬 공급이 수요를 못 따라가는 단계";
           }
-          else if(socre<20){
-            document.querySelector(".phrase").textContent = "침팬치"
+          else if(score>14){
+            document.querySelector(".phrase").textContent = "타의 모범이 되는 충신입니다.";
           }
 
           // When the user clicks on the button, close the modal and reload the page
@@ -191,7 +191,9 @@ try {
     let availableElement;
     fetch(`/img?date=${selectedDate}`)
     .then(response => response.json())
-    .then(video => {
+    .then(data => {
+      let video = data[0];
+      let resultindex = data[1];
       if (video.error) {
         // Show the modal
         let modal = document.getElementById("myModal");
@@ -211,6 +213,7 @@ try {
         availableElement = document.querySelector(' .available');
         if (availableElement) {
             const titleElement = document.createElement('p');
+            titleElement.setAttribute('data-index',resultindex)
             titleElement.textContent = `${title}`;
             availableElement.querySelector('.description').appendChild(titleElement);
 
@@ -238,11 +241,17 @@ try {
         topdateElement.style.display = 'none';
         toplinkElement = document.querySelector('.top .link')
         toplinkElement.style.display = 'none'
-
-
     });
     }
+  function fetchDate(videoindex){
+    fetch(`/date?index=${videoindex}`)
+    .then(response => response.json())
+    .then(data => {
+      let date = data[0];
+      let link = data[1];
+      return [date,link];
+    });
+  }
 
-  
 
   
