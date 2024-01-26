@@ -18,9 +18,13 @@ btn.onclick = function() {
 let selectedDate = `${year}-${month}-${day}`;
 console.log(selectedDate);
 modal.style.display = "none";
-fetchImage(selectedDate);
-setTimeout(function() { fetchImage(selectedDate); }, 250); 
+fetchImage(selectedDate).then(() =>{
+  return fetchImage(selectedDate);
+}).then(() =>{
+  displayFirstOne();
+});
 
+let currentYear = 0
 let life = 3
 let score = 0
 var item = document.querySelector('.item');
@@ -59,17 +63,33 @@ try {
     // e.preventDefault();
     // Get the dropped element
     const droppedElement = document.querySelector(".dragging");
-    // Check if the dropped element has the item class
+    // Check if the dropped element has he item class
     // as item dropped, remove the dragging class, set draggable false, make new img on top, and scoring part
     if (droppedElement && droppedElement.classList.contains("item")) {
-      let yearElement = droppedElement.querySelector('.description .date');  // droppedElement 내의 'year' 클래스를 가진 요소만 선택
-      let linkElement = droppedElement.querySelector('.description .link');
-      if (yearElement) {
-        yearElement.style.display = 'block';  // 해당 yearElement를 표시
-        linkElement.style.display = 'block';
-    }
-      let currentYear = new Date(droppedElement.querySelector('.description .date').textContent);
+      droppedindex = droppedElement.querySelector('.description p').dataset.index;
+      console.log(droppedindex)
+      delay(270).then(() => {
+        return fetchDate(droppedindex);
+      }).then((result) => {
+        dropdatelink = result;
+        
+        const dateElement = document.createElement('p');
+        dateElement.textContent = `${dropdatelink[0]}`;
+        dateElement.classList.add('date');
+        droppedElement.querySelector('.description').appendChild(dateElement);
+        
+        const linkElement = document.createElement('a');
+        linkElement.href = `${dropdatelink[1]}`;
+        linkElement.target = '_blank';
+        linkElement.classList.add('link');
+        linkElement.textContent = "보러가기";
+        droppedElement.querySelector('.description').appendChild(linkElement);
+        currentYear = new Date(droppedElement.querySelector('.description .date').textContent);
       console.log(0,currentYear);
+      }).catch((error) => {
+        console.error(error);
+      });
+
       let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
       let reversedSiblings = [...siblings].reverse();
       droppedElement.classList.remove("dragging");
@@ -188,6 +208,7 @@ try {
   }
 }
   function fetchImage(selectedDate) {
+    return new Promise((resolve, reject) => {
     let availableElement;
     fetch(`/img?date=${selectedDate}`)
     .then(response => response.json())
@@ -217,17 +238,6 @@ try {
             titleElement.textContent = `${title}`;
             availableElement.querySelector('.description').appendChild(titleElement);
 
-            const dateElement = document.createElement('p');
-            dateElement.textContent = `${date}`;
-            dateElement.classList.add('date');
-            availableElement.querySelector('.description').appendChild(dateElement);
-
-            const linkElement = document.createElement('a');
-            linkElement.href = `${link}`;
-            linkElement.target = '_blank';
-            linkElement.classList.add('link');
-            linkElement.textContent = "보러가기";
-            availableElement.querySelector('.description').appendChild(linkElement);
         }
 
         if (availableElement) {
@@ -237,21 +247,85 @@ try {
             }
         }
         availableElement.classList.remove("available")
-        topdateElement = document.querySelector('.top .date');
-        topdateElement.style.display = 'none';
-        toplinkElement = document.querySelector('.top .link')
-        toplinkElement.style.display = 'none'
-    });
-    }
-  function fetchDate(videoindex){
-    fetch(`/date?index=${videoindex}`)
-    .then(response => response.json())
-    .then(data => {
-      let date = data[0];
-      let link = data[1];
-      return [date,link];
+        resolve();  // 모든 처리가 완료되면 Promise를 해결합니다.
+      })
+      .catch(error => {
+          reject(error);  // 에러가 발생하면 Promise를 거부합니다.
+      });
+  });
+};
+  
+
+
+function fetchDate(videoindex) {
+  return new Promise((resolve, reject) => {
+      fetch(`/date?index=${videoindex}`)
+      .then(response => response.json())
+      .then(data => {
+          let date = data[0];
+          let link = data[1];
+          resolve([date, link]);  // 모든 처리가 완료되면 Promise를 해결합니다.
+      })
+      .catch(error => {
+          reject(error);  // 에러가 발생하면 Promise를 거부합니다.
+      });
+  });
+}
+
+
+  function delay(ms){
+    return new Promise(resolve => setTimeout(resolve,ms));
+  }
+
+  function displayFirstOne() {
+    let firstone = document.querySelector('.bottom .item');
+    let firstdescription = firstone.querySelector('.description');
+    let firstindex = firstdescription.querySelector('p');
+    let firstonedatelink;
+    firstindex = firstindex.dataset.index;
+    
+    delay(270).then(() => {
+      return fetchDate(firstindex);
+    }).then((result) => {
+      firstonedatelink = result;
+      
+      const dateElement = document.createElement('p');
+      dateElement.textContent = `${firstonedatelink[0]}`;
+      dateElement.classList.add('date');
+      firstone.querySelector('.description').appendChild(dateElement);
+      console.log(firstindex,firstonedatelink)
+      
+      const linkElement = document.createElement('a');
+      linkElement.href = `${firstonedatelink[1]}`;
+      linkElement.target = '_blank';
+      linkElement.classList.add('link');
+      linkElement.textContent = "보러가기";
+      firstone.querySelector('.description').appendChild(linkElement);
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
+  function displayDateLink(index){
+    delay(270).then(() => {
+      return fetchDate(firstindex);
+    }).then((result) => {
+      firstonedatelink = result;
+      
+      const dateElement = document.createElement('p');
+      dateElement.textContent = `${firstonedatelink[0]}`;
+      dateElement.classList.add('date');
+      firstone.querySelector('.description').appendChild(dateElement);
+      
+      const linkElement = document.createElement('a');
+      linkElement.href = `${firstonedatelink[1]}`;
+      linkElement.target = '_blank';
+      linkElement.classList.add('link');
+      linkElement.textContent = "보러가기";
+      firstone.querySelector('.description').appendChild(linkElement);
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
 
   

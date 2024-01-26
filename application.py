@@ -10,7 +10,6 @@ from datetime import datetime
 import os
 
 
-
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"),name="static")
@@ -21,10 +20,9 @@ s3 = boto3.client(
     aws_secret_access_key=os.getenv('s3_secret_key')
 )
 
-
 key = "videos.json"
 videos = None
-videos_after_selected_date = None
+videos_after_selected_date = []
 standarddate = 0
 visit = []
 index = 0
@@ -82,8 +80,10 @@ async def image(request: Request):
 
 @app.get("/date")
 async def date(request: Request):
+    global videos_after_selected_date
     try:
-        videoindex = request.query_params.get('index')
+        videoindex = int(request.query_params.get('index'))
+        print(videos_after_selected_date[videoindex]['date'])
         return [videos_after_selected_date[videoindex]['date'],videos_after_selected_date[videoindex]['link']]
     except Exception as e:
         raise HTTPException(status_code=500,detail=str(e))
