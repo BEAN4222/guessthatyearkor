@@ -16,7 +16,6 @@ btn.onclick = function() {
   
 // 가져온 값을 사용하여 날짜 문자열을 만듭니다.
 let selectedDate = `${year}-${month}-${day}`;
-console.log(selectedDate);
 modal.style.display = "none";
 fetchImage(selectedDate).then(() =>{
   return fetchImage(selectedDate);
@@ -67,7 +66,6 @@ try {
     // as item dropped, remove the dragging class, set draggable false, make new img on top, and scoring part
     if (droppedElement && droppedElement.classList.contains("item")) {
       droppedindex = droppedElement.querySelector('.description p').dataset.index;
-      console.log(droppedindex)
       delay(270).then(() => {
         return fetchDate(droppedindex);
       }).then((result) => {
@@ -85,11 +83,6 @@ try {
         linkElement.textContent = "보러가기";
         droppedElement.querySelector('.description').appendChild(linkElement);
         currentYear = new Date(droppedElement.querySelector('.description .date').textContent);
-      console.log(0,currentYear);
-      }).catch((error) => {
-        console.error(error);
-      });
-
       let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
       let reversedSiblings = [...siblings].reverse();
       droppedElement.classList.remove("dragging");
@@ -117,13 +110,10 @@ try {
       let nextSiblingYear = new Date(nextSibling.querySelector('.description .date').textContent);
       if (nextSiblingYear<currentYear){
         scoreflag = false;
-        console.log("틀린 연도",nextSibling)
         nextSibling = siblings.find(sibling => {
           nextSiblingYear = new Date(sibling.querySelector('.description .date').textContent);
-          console.log('임시 다음 년도',nextSiblingYear,currentYear)
           return nextSiblingYear>currentYear;
         });
-        console.log('수정된 다음 요소 년도',nextSibling)
         // Inserting the dragging item before the found sibling
         sortableList.insertBefore(droppedElement, nextSibling);
       }
@@ -139,7 +129,6 @@ try {
         });
           // Inserting the dragging item before the found sibling
       if (prevSibling) {
-        console.log('수정된 바로 전 요소 년도',prevSibling)
         sortableList.insertBefore(droppedElement, prevSibling.nextSibling);
       } else {
         // Inserting the dragging item at the beginning of the list
@@ -155,13 +144,13 @@ try {
           let modal = document.getElementById("myModal");
           modal.style.display = "block";
           if (score == 0){
-            document.querySelector(".phrase").textContent = "낯선 영상들한테 당해버림";
+            document.querySelector(".phrase").textContent = "입문 날짜에 착오가 있네요";
           }
           else if(score<3){
             document.querySelector(".phrase").textContent = "신규 구독자시군요";
           }
           else if(score<5){
-            document.querySelector(".phrase").textContent = "팬치 입문 부정기";
+            document.querySelector(".phrase").textContent = "팬치 입문";
           }
           else if(score<10){
             document.querySelector(".phrase").textContent = "영상 꾸준히 보는 사람";
@@ -169,7 +158,10 @@ try {
           else if(score<15){
             document.querySelector(".phrase").textContent = "슬슬 공급이 수요를 못 따라가는 단계";
           }
-          else if(score>14){
+          else if(score<18){
+            document.querySelector(".phrase").textContent = "왁튜브 상시 거주중";
+          }
+          else if(score>17){
             document.querySelector(".phrase").textContent = "타의 모범이 되는 충신입니다.";
           }
 
@@ -197,7 +189,12 @@ try {
       }
       else if(life==1){
         document.querySelector(".life").textContent = "❤️";
-      }
+      }  
+    }).catch((error) => {
+        console.error(error);
+      });
+
+
 
       
     }
@@ -293,7 +290,6 @@ function fetchDate(videoindex) {
       dateElement.textContent = `${firstonedatelink[0]}`;
       dateElement.classList.add('date');
       firstone.querySelector('.description').appendChild(dateElement);
-      console.log(firstindex,firstonedatelink)
       
       const linkElement = document.createElement('a');
       linkElement.href = `${firstonedatelink[1]}`;
